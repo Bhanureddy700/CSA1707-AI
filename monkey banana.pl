@@ -1,26 +1,26 @@
-state(on_floor, at(monkey, middle), at(banana, ceiling), not_at(chair, middle)).
+on(floor,monkey).
+on(floor,chair).
+in(room,monkey).
+in(room,chair).
+in(room,banana).
+at(ceiling,banana).
 
-% Actions to move the monkey, the chair, and reach the banana
-action(grab, state(on_floor, at(monkey, Position), at(monkey, Position), at(chair, Position)), state(on_chair, at(monkey, Position), at(monkey, Position), at(chair, Position))).
-action(climb, state(on_floor, at(monkey, Position), at(monkey, Position), at(chair, Position)), state(on_chair, at(monkey, Position), at(monkey, Position), at(chair, Position))).
-action(push(Position), state(on_floor, at(monkey, Position), at(banana, ceiling), not_at(chair, Position)), state(on_floor, at(monkey, Position), at(banana, ceiling), at(chair, Position))).
+strong(monkey).
+grasp(monkey).
+climb(monkey,chair).
 
-% Rules to perform actions
-perform(Action, State, NewState) :-
-    call(Action, Action, State, NewState).
+push(monkey,chair):-
+    strong(monkey).
 
-% Goal state: monkey has the banana
-goal_state(state(_, at(monkey, _), at(banana, _), _)).
+under(banana,chair):-
+    push(monkey,chair).
 
-% Plan to achieve the goal
-plan(State, Plan) :-
-    goal_state(State),
-    Plan = [].
 
-plan(State, [Action | RestOfPlan]) :-
-    action(Action, State, NewState),
-    plan(NewState, RestOfPlan).
+canreach(banana,monkey):-
+    at(floor,banana);
+    at(ceiling,banana),
+    under(banana,chair),
+    climb(monkey,chair).
 
-% Example usage
-% To find a plan to get the banana, use:
-% ?- plan(state(on_floor, at(monkey, middle), at(banana, ceiling), not_at(chair, middle)), Plan).
+canget(banana,monkey):-
+    canreach(banana,monkey),grasp(monkey).
