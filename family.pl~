@@ -1,0 +1,5 @@
+parent(john, jim).
+parent(john, lisa).
+parent(lisa, ann).
+parent(lisa, peter).
+parent(jim, tom).
